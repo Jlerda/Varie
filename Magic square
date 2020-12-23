@@ -1,0 +1,56 @@
+from math import sqrt
+
+test_list = input("Inserire un numero di valori tale che posto sotto radice quadrata dia un valore intero: ").split()
+test_list_int = [int(element) for element in test_list]
+
+
+def matrix_generator(elements):                                    # Helper per costruire la matrice dall'input utente
+    side_length = int(sqrt(len(elements)))
+    matrix = [[] for i in range(side_length)]
+    list_index = 0
+    for element in elements:
+        matrix[list_index].append(element)
+        list_index += 1
+        if list_index == side_length:
+            list_index = 0
+    return matrix
+
+
+def magic_square(tab):                                             # Funzione di verifica quadrato magico
+    side_length = len(tab)
+    elements_check = [int(i) for i in range((side_length**2) + 1)]
+    sample_value = sum(tab[0])
+    column_value = 0
+    for position in range(side_length):
+        for column in range(side_length):
+            if tab[column][position] not in elements_check:         # Verifica della presenza di tutti i singoli numeri
+                return "La matrice non è un quadrato magico 1"
+            else:                                                   # Verifica dei valori delle righe
+                column_value += tab[column][position]
+                if column == side_length - 1 and column_value != sample_value:
+                    return "La matrice non è un quadrato magico 2"
+                elif column == side_length - 1 and column_value == sample_value:
+                    #print(column_value)                            # test
+                    column_value = 0
+
+    for element in tab:                                             # Verifica dei valori delle colonne
+        if sum(element) != sample_value:
+            return "La matrice non è un quadrato magico 3"
+
+    first_diagonal_value = 0                                        # Verifica dei valori delle diagonali
+    second_diagonal_value = 0
+    for i in range(side_length):
+        first_diagonal_value += tab[i][i]
+    #print(first_diagonal_value)                                    # test
+
+    for i in range((1 - side_length), + 1):
+        second_diagonal_value += tab[i][i]
+    #print(second_diagonal_value)                                   # test
+
+    if not(first_diagonal_value == second_diagonal_value and first_diagonal_value == sample_value):
+        return "La matrice non è un quadrato magico 4"
+
+    return "La matrice è un quadrato magico"
+
+
+print(magic_square(matrix_generator(test_list_int)))
