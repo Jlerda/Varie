@@ -1,0 +1,45 @@
+import string
+
+alphabet_list = list(string.ascii_lowercase)
+keyword = input("Inserire la parola chiave: ")
+keyword_uni_list = []
+for letter in keyword:
+    if letter not in keyword_uni_list:
+        keyword_uni_list.append(letter)
+reversed_alphabet = reversed(alphabet_list)
+for letter in reversed_alphabet:
+    if letter not in keyword_uni_list:
+        keyword_uni_list.append(letter)
+cipher = {}
+for i in range(len(keyword_uni_list)):
+    cipher.update({keyword_uni_list[i]: alphabet_list[i]})
+
+def decrypt(cipher, file):
+    encrypted = open(file, "r")
+    decrypted = open("decrypted file.txt", "w")
+    for line in encrypted:
+        decrypted_line = ""
+        for letter in line:
+            if letter in cipher:
+               decrypted_line += cipher[letter]
+            else:
+                decrypted_line += letter
+        decrypted.write(decrypted_line)
+    encrypted.close()
+    decrypted.close()
+
+def encrypt(cipher, file):
+    original = open(file, "r")
+    encrypted = open("encrypted.txt", "w")
+    reversed_cipher = {value: key for (key, value) in cipher.items()}
+    for line in original:
+        encrypted_line = ""
+        for letter in line:
+            if letter in reversed_cipher:
+                encrypted_line += reversed_cipher[letter]
+            else:
+                encrypted_line += letter
+        encrypted.write(encrypted_line)
+    encrypted.close()
+    original.close()
+
