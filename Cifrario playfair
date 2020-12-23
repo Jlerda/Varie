@@ -1,0 +1,60 @@
+import string
+
+
+def cipher_build():  # Funzione per costruire la griglia 5x5 in funzione della keyword inserita dall'utente
+    keyword = list(input("Inserire la parola chiave desiderata: "))
+    alphabet_list = list(string.ascii_lowercase)  # Lista contenente tutte le lettere dell'alfabeto in lowercase
+    alphabet_list.remove("j")  # Gestione del caso particolare "j" sulla lista alfabeto
+    matrix_list = []
+    for letter in keyword:  # Eliminazione duplicati dalla keyword
+        if letter == "j":
+            letter = "i"
+        if letter not in matrix_list:
+            matrix_list.append(letter)
+    for letter in alphabet_list:
+        if letter not in matrix_list:
+            matrix_list.append(letter)
+    matrix_dict = {0: 5, 5: 10, 10: 15, 15: 20, 20: 25}  # Riempimento della matrice tramite list comprehension dentro dict comprehension
+    matrix = [[matrix_list[i] for i in range(j, k)] for (j, k) in matrix_dict.items()]
+    return matrix
+
+
+def encrypt_decrypt(cipher, file):
+    output_file_name = input("Inserire il nome del file di destinazione: ")
+    original = open(file, "r")
+    encrypted = open(output_file_name + ".txt", "w")
+    for line in original:
+        line_char = line.replace(" ", "")  # Riduzione della linea del file ai suoi soli caratteri
+        encrypted_line = ""  # Inizializzazione della linea criptata/decriptata
+        i = 0
+        j = 1
+        while j < len(line_char):
+            first_letter = line_char[i]
+            second_letter = line_char[j]
+            couple = {first_letter: [], second_letter: []}
+            for row in range(5):  # Ciclo per trovare e memorizzare gli indici di riga e colonna delle lettere da criptare/decriptare
+                for column in range(5):
+                    if cipher[row][column] == first_letter:
+                        couple[first_letter] = [row, column]
+                    elif cipher[row][column] == second_letter:
+                        couple[second_letter] = [row, column]
+            first_letter_row = couple[first_letter][0]
+            second_letter_row = couple[second_letter][0]
+            first_letter_column = couple[first_letter][1]
+            second_letter_column = couple[second_letter][1]
+            delta_row = first_letter_row - second_letter_row
+            if first_letter_row != second_letter_row and first_letter_column != second_letter_column:  # Caso del rettangolo
+                if delta_row < 0:  # Prima lettera nell'angolo alto e seconda lettera nell'angolo basso
+                    encrypted_line += cipher[second_letter_row - abs(delta_row)][second_letter_column] + cipher[first_letter_row + abs(delta_row)][first_letter_column]
+                else:  # Prima lettera nell'angolo basso e seconda lettera nell'angolo alto
+                    encrypted_line += cipher[second_letter_row + abs(delta_row)][second_letter_column] + cipher[first_letter_row - abs(delta_row)][first_letter_column]
+            else:  # Caso senza rettangolo bisogna effettuare semplicemente uno scambio di posizione
+                encrypted_line += second_letter + first_letter
+            i += 2
+            j += 2
+        encrypted.write(encrypted_line + "\n")
+    encrypted.close()
+    original.close()
+
+    
+
