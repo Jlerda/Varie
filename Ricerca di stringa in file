@@ -1,0 +1,8 @@
+files_to_search = input("Inserire i nomi dei file su cui si vuole effettuare la ricerca: ").split(",")
+target = input("Inserire la parola che si vuole cercare: ")
+results = []
+for file in files_to_search:
+    with open(file + ".txt", "r") as current_file:
+        for line in current_file:
+            if target in line:
+                print(file + ": " + line)
