@@ -1,0 +1,62 @@
+
+def matrix_printer(matrix):  # Helper per stampare periodicamente la matrice
+    print("\n")
+    print("\t\t" + "-" * 25)
+    for element in matrix:
+        print(f"\t\t|  {element[0]}  |  {element[1]}  |  {element[2]}  |")
+        print("\t\t" + "-" * 25)
+    print("\n")
+
+
+def do_you_win(matrix, row, column, player):  # Verifica delle condizioni di vittoria
+    func_winner = False
+    if matrix[row] == [player for i in range(3)]:  # Riga
+        func_winner = player
+    elif matrix[0][column] == matrix[1][column] == matrix[2][column] == player:  # Colonna
+        func_winner = player
+    elif row == column:
+        if matrix[0][0] == matrix[1][1] == matrix[2][2]:  # Diagonale 1
+            func_winner = player
+    elif ((row == 0 or row == 2) and (column == 0 or column == 2)) or row == column == 1:  # Diagonale 2
+        if matrix[0][2] == matrix[2][0] == matrix[1][1] == player:
+            func_winner = player
+
+    return func_winner
+
+
+game_matrix = [["   " for i in range(3)] for i in range(3)]  # Impostazioni di inizio partita
+player_A = " X "
+player_B = " O "
+winner = False
+matrix_printer(game_matrix)
+counter = 0
+
+while winner is False and counter < 9:  # Ciclo di gioco
+    move_A = list(map(int, input("E' il turno del player A - Simbolo 'X'.\nPlayer A inserisci il numero di riga e il numero di colonna della tua mossa: ").split()))  # Inizio mossa del giocatore A
+    while len(move_A) != 2 or max(move_A) > 3 or game_matrix[move_A[0] - 1][move_A[1] - 1] != "   ":
+        print('Mossa non valida, inserire due numeri interi compresi tra 1 e 3 separati da uno spazio\nLa cella scelta deve essere vuota, simobolo "   "')
+        move_A = list(map(int, input("E' il turno del player A - Simbolo 'X'.\nPlayer A inserisci il numero di riga e il numero di colonna della tua mossa: ").split()))
+    row_A = move_A[0] - 1
+    column_A = move_A[1] - 1
+    game_matrix[row_A][column_A] = player_A
+    counter += 1  # Fine mossa del giocatore A
+    matrix_printer(game_matrix)
+    winner = do_you_win(game_matrix, row_A, column_A, player_A)  # Verifica se il giocatore A ha vinto la partita
+    if winner is False and counter < 9:
+        move_B = list(map(int, input("E' il turno del player B - Simbolo 'O'.\nPlayer B inserisci il numero di riga e il numero di colonna della tua mossa: ").split()))  # Inizio mossa del giocatore B
+        while len(move_B) != 2 or max(move_B) > 3 or game_matrix[move_B[0] - 1][move_B[1] - 1] != "   ":
+            print('Mossa non valida, inserire due numeri interi compresi tra 1 e 3 separati da uno spazio\nLa cella scelta deve essere vuota, simobolo "   "')
+            move_B = list(map(int, input("E' il turno del player B - Simbolo 'O'.\nPlayer B inserisci il numero di riga e il numero di colonna della tua mossa: ").split()))
+        row_B = move_B[0] - 1
+        column_B = move_B[1] - 1
+        game_matrix[row_B][column_B] = player_B
+        counter += 1  # Fine mossa del giocatore B
+        matrix_printer(game_matrix)
+        winner = do_you_win(game_matrix, row_B, column_B, player_B)  # Verifica se il giocatore B ha vinto la partita
+
+if winner == player_A:  # Stampa del risultato della partita una volta terminato il ciclo di gioco
+    print("Il player A vince!!")
+elif winner == player_B:
+    print("Il player B vince!!")
+else:
+    print("La partita è finita in pareggio!")
