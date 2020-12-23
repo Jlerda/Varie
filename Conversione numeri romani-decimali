@@ -1,0 +1,16 @@
+def conv_romani(num_rom):
+    dictrom = {"I": 1, "V": 5, "X": 10, "L": 50, "C": 100, "D": 500, "M": 1000}
+    upperstring = num_rom.upper()
+    total_converted = 0
+    while len(upperstring) > 1:
+        if dictrom[upperstring[0]] >= dictrom[upperstring[1]]:
+            total_converted += dictrom[upperstring[0]]
+            upperstring = upperstring[1:]
+        else:
+            total_converted += dictrom[upperstring[1]] - dictrom[upperstring[0]]
+            upperstring = upperstring[2:]
+
+    total_converted += dictrom[upperstring]
+    return total_converted
+
+print(conv_romani("MMMMMMMMMMMMMMMMMMMMMMMMCCCXCII"))
